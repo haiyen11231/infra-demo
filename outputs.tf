@@ -17,3 +17,8 @@ output "rds_endpoint" {
   description = "PostgreSQL endpoint"
   value       = aws_db_instance.postgres.address
 }
+
+output "alb_dns_name" {
+  description = "DNS name of the Application Load Balancer"
+  value       = var.enable_alb ? aws_lb.main[0].dns_name : null
+}

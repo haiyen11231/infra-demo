@@ -9,6 +9,18 @@ data "aws_subnets" "default_vpc" {
   }
 }
 
+data "aws_security_group" "default_vpc_sg" {
+  filter {
+    name   = "group-name"
+    values = ["default"]
+  }
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
 locals {
   name_prefix = var.project_name
 }
@@ -53,6 +65,19 @@ resource "aws_instance" "app" {
 
   tags = {
     Name = "${local.name_prefix}-app"
+  }
+}
+
+resource "aws_lb" "main" {
+  count              = var.enable_alb ? 1 : 0
+  name               = "${local.name_prefix}-alb"
+  load_balancer_type = "application"
+  internal           = false
+  security_groups    = [data.aws_security_group.default_vpc_sg.id]
+  subnets            = data.aws_subnets.default_vpc.ids
+
+  tags = {
+    Name = "${local.name_prefix}-alb"
   }
 }
 

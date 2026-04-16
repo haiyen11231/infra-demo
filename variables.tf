@@ -16,6 +16,12 @@ variable "app_instance_type" {
   default     = "t3.micro"
 }
 
+variable "enable_alb" {
+  description = "Set to true to create ALB resources. Keep false for free-tier-focused deployments."
+  type        = bool
+  default     = false
+}
+
 variable "db_name" {
   description = "PostgreSQL database name"
   type        = string
