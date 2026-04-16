@@ -2,10 +2,10 @@
 
 This project provisions a 3-tier web application on AWS using Terraform:
 
-- Application Load Balancer in public subnets
-- Auto Scaling Group with configurable EC2 instance type (default: t3.micro) in private app subnets
-- RDS PostgreSQL db.t3.micro in private DB subnets
-- Single VPC with public and private subnet tiers
+- VPC (network)
+- EC2 app server (default: t3.micro)
+- RDS PostgreSQL (db.t3.micro)
+
 
 ## What You Need
 
@@ -76,27 +76,21 @@ terraform destroy
 In AWS Console, confirm these resources exist:
 
 1. VPC dashboard
-- 1 VPC
-- 2 public + 4 private subnets
+- default VPC exists and is being used
 
 2. EC2 dashboard
-- ALB in Load Balancers
-- Target Group with healthy targets
-- Auto Scaling Group and EC2 instances
+- 1 EC2 instance (running)
 
 3. RDS dashboard
 - PostgreSQL instance (db.t3.micro)
 - Not publicly accessible
 
 4. Security Groups
-- ALB SG allows inbound 80 from internet
-- App SG allows inbound 80 only from ALB SG
-- DB SG allows inbound 5432 only from App SG
+- default security group is used
 
 ## Free Tier Notes
 
-- ALB is generally not Free Tier eligible and will usually incur charges.
+- ALB and Auto Scaling were removed to keep this demo simpler and lower cost.
 - EC2/RDS free usage is limited by account eligibility, region, and monthly hour/storage quotas.
-- ASG defaults are set to 1 instance to reduce the chance of exceeding free hours.
-- NAT Gateway is intentionally not created to avoid extra hourly/data processing charges.
+- Terraform uses the default VPC and creates a DB subnet group from its subnets for RDS placement.
 - Always run terraform destroy after testing.
